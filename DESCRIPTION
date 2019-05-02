@@ -1,0 +1,15 @@
+Package: MA585.Functions
+Title: Finds Parameter that Gives Desired Value for Function
+Version: 1.1.0
+Authors@R: person("Dalton", "Cowan", email = "cowandalton@gmail.com", role = c("aut", "cre"))
+Description: This package allows a user to search for the value of either the
+ first or a later parameter that results in a function obtaining a desired
+ value over an interval. The package will only provide accurate results if
+ the specified function is monotonic in the interval specified. Also, this
+ package will give an error if the desired value is not obtained in the
+ specified interval.
+Depends: R (>= 3.5.0)
+License: CC0
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1.9000
