@@ -24,7 +24,7 @@ find_first_value(f, val = 0, maximum = 1e+05, minimum = 0,
 A list will be returned containing the estimate for the first parameter, the function value when the parameter estimate is used in f, and a warning if the parameter estimate results in a function value that is more than 1 away from val.
 }
 \description{
-This function finds the value of the first parameter for a function that gives a desired value.
+This function finds the value of the first parameter for a function that gives a desired value. Note, all other required parameters of f must have defualt values for this function to run.
 }
 \examples{
 find_first_value(log, val = 6.3, maximum = 10000)

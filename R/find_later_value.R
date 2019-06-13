@@ -1,20 +1,20 @@
 #' Parameter Estimator (Besides First Parameter)
-#' 
+#'
 #' This function finds the value of a parameter other than the first for a function that gives a desired value.
 #' @param f the function that is being used (note f should be a monotonic function for this function to work properly).
-#' @param prams a list of parameter values for all parameters that are specified in a function call prior to the desired parameter.
+#' @param params a list of parameter values for all parameters that are specified in a function call prior to the desired parameter as well as any required parameters that do not have default values that occur after the desired parameter.
 #' @param val the desired value for the function.
 #' @param maximum the maximum value for the search parameter (default = 100000).
 #' @param minimum the minimum value for the search parameter (default = 0).
 #' @param only_integers logical indicating whether the function only takes integers for the search parameter (default = F, allowing decimals).
-#' @param decimals the number of decimal places to use for the search parameter. 
+#' @param decimals the number of decimal places to use for the search parameter.
 #' @return A list will be returned containing the estimate for the desired parameter, the function value when the parameter estimate is used in f, and a warning if the parameter estimate results in a function value that is more than 1 away from val.
-#' @export 
-#' @examples 
-#' find_later_value(log, prams = list(32), val = 2, decimals = 6)
+#' @export
+#' @examples
+#' find_later_value(log, params = list(32), val = 2, decimals = 6)
 
-find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, only_integers = F, decimals = 4){
-  
+find_later_value <- function(f, params, val = 0, maximum = 100000, minimum = 0, only_integers = F, decimals = 4){
+
   #checking that f is a valid function
   f <- match.fun(f)
   #counting the number of non-decimal digits for the specified maximum
@@ -38,13 +38,13 @@ find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, o
   #setting the leading digit to zero originally
   leading.digit <- 0
   #checking if the minimum value is valid for the function
-  min_check <- try(do.call(f, c(prams, minimum)), silent = T)
+  min_check <- try(do.call(f, c(params, minimum)), silent = T)
   if(class(min_check) != "numeric"){
     #stopping the function if the minimum value is not valid for the function
     stop("Error occurred when checking the minimum value. Please specify a new minimum.")
   }
   #checking if the maximum value is valid for the function
-  max_check <- try(do.call(f, c(prams, maximum)), silent = T)
+  max_check <- try(do.call(f, c(params, maximum)), silent = T)
   if(class(max_check) != "numeric"){
     #stopping the function if the maximum value is not valid
     stop("Error occurred when checking the maximum value. Please specify a new maximum.")
@@ -61,17 +61,17 @@ find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, o
     }
     #if the current value plugged in for the parameter is less than the minimum, than the minimum is used instead. Otherwise, the current value is plugged into the function.
     if(i*10^(digits-1) < minimum){
-      current_value <- do.call(f, c(prams, minimum))
+      current_value <- do.call(f, c(params, minimum))
     } else{
-      current_value <- do.call(f, c(prams, (i*10^(digits-1))))
+      current_value <- do.call(f, c(params, (i*10^(digits-1))))
     }
     #checks if the next value plugged in for the parameter is greater than the maximum
     if((i+1)*10^(digits-1) > maximum){
       #assigns the maximum if the next value is greater than the maximum
-      next_value <- do.call(f, c(prams, maximum))
+      next_value <- do.call(f, c(params, maximum))
     } else{
       #uses the next value if it is less than or equal to the maximum
-      next_value <- do.call(f, c(prams, ((i+1)*10^(digits-1))))
+      next_value <- do.call(f, c(params, ((i+1)*10^(digits-1))))
     }
     #assigns the leading digit the current value of i if current function value is greater than or equal to the desired value and the next function value is less than or equal to the desired value
     if((current_value >= val) & (next_value <= val)){
@@ -101,14 +101,14 @@ find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, o
         next
       }
       if(value+i*10^(digits-j) < minimum){
-        current_value <- do.call(f, c(prams, minimum))
+        current_value <- do.call(f, c(params, minimum))
       } else{
-        current_value <- do.call(f, c(prams, value+i*10^(digits-j)))
+        current_value <- do.call(f, c(params, value+i*10^(digits-j)))
       }
       if(value+(i+1)*10^(digits-j) > maximum){
-        next_value <- do.call(f, c(prams, maximum))
+        next_value <- do.call(f, c(params, maximum))
       } else{
-        next_value <- do.call(f, c(prams, (value+(i+1)*10^(digits-j))))
+        next_value <- do.call(f, c(params, (value+(i+1)*10^(digits-j))))
       }
       if((current_value >= val) & (next_value <= val)){
         current.digit <- i*10^(digits-j)
@@ -134,14 +134,14 @@ find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, o
       next
     }
     if(value+i*10^(digits-totdigits) < minimum){
-      current_value <- do.call(f, c(prams, minimum))
+      current_value <- do.call(f, c(params, minimum))
     } else{
-      current_value <- do.call(f, c(prams, value+i*10^(digits-totdigits)))
+      current_value <- do.call(f, c(params, value+i*10^(digits-totdigits)))
     }
     if(value+(i+1)*10^(digits-totdigits) > maximum){
-      next_value <- do.call(f, c(prams, maximum))
+      next_value <- do.call(f, c(params, maximum))
     } else{
-      next_value <- do.call(f, c(prams, (value+(i+1)*10^(digits-totdigits))))
+      next_value <- do.call(f, c(params, (value+(i+1)*10^(digits-totdigits))))
     }
     #checking if the current value is greater than or equal to the desired value and the next value is less than or equal to the desired value
     if((current_value >= val) & (next_value <= val)){
@@ -151,7 +151,7 @@ find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, o
         last.digit <- i*10^(digits-totdigits)
       } else{
         #assigns the last digit based on the next value
-        last.digit <- (i+1)*10^(digits-totdigits)  
+        last.digit <- (i+1)*10^(digits-totdigits)
       }
     }
     #checking if the current value is less than or equal to the desired value and the next value is greater than or equal to the desired value
@@ -159,9 +159,9 @@ find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, o
       if(abs(current_value-val) < abs(next_value-val)){
         last.digit <- i*10^(digits-totdigits)
       } else{
-        last.digit <- (i+1)*10^(digits-totdigits)  
+        last.digit <- (i+1)*10^(digits-totdigits)
       }
-    }  
+    }
   }
   #adding the last digit to the parameter value
   value <- value + last.digit
@@ -170,24 +170,24 @@ find_later_value <- function(f, prams, val = 0, maximum = 100000, minimum = 0, o
     stop("Function does not take on desired value between the specified maximum and minimum")
   }
   #plugging in the parameter estimate into the function
-  functionresult <- do.call(f, c(prams, value))
+  functionresult <- do.call(f, c(params, value))
   #turning off warnings
   options(warn = -1)
   #trying to plug 1 less than the parameter estimate into the function
-  lower_value <- try(do.call(f, c(prams, value-1)), silent = T)
+  lower_value <- try(do.call(f, c(params, value-1)), silent = T)
   if(class(lower_value) != "numeric"){
     #if 1 less than the parameter estimate is not valid for the function, then use the minimum instead
-    lower_value <- do.call(f, c(prams, minimum))
+    lower_value <- do.call(f, c(params, minimum))
   }
   #gives an error message if the function value using the parameter estimate is farther from the desired value than a lower value of the parameter
   if((abs(functionresult-val) > (abs(lower_value-val)))){
-    stop("Function does not take on desired value between the specified maximum and minimum.")  
+    stop("Function does not take on desired value between the specified maximum and minimum.")
   }
   #trying to plug 1 more than the parameter estimate into the function
-  greater_value <- try(do.call(f, c(prams, value+1)), silent = T)
+  greater_value <- try(do.call(f, c(params, value+1)), silent = T)
   if(class(greater_value) != "numeric"){
     #if 1 more than the parameter estimate is not valid for the function, then use the maximum instead
-    greater_value <- do.call(f, c(prams, maximum))
+    greater_value <- do.call(f, c(params, maximum))
   }
   #gives an error message if the function value using the parameter estimate is farther from the desired value than a greater value of the parameter
   if((abs(functionresult-val) > (abs(greater_value-val)))){

@@ -4,13 +4,13 @@
 \alias{find_later_value}
 \title{Parameter Estimator (Besides First Parameter)}
 \usage{
-find_later_value(f, prams, val = 0, maximum = 1e+05, minimum = 0,
+find_later_value(f, params, val = 0, maximum = 1e+05, minimum = 0,
   only_integers = F, decimals = 4)
 }
 \arguments{
 \item{f}{the function that is being used (note f should be a monotonic function for this function to work properly).}
 
-\item{prams}{a list of parameter values for all parameters that are specified in a function call prior to the desired parameter.}
+\item{params}{a list of parameter values for all parameters that are specified in a function call prior to the desired parameter as well as any required parameters that do not have default values that occur after the desired parameter.}
 
 \item{val}{the desired value for the function.}
 
@@ -29,5 +29,5 @@ A list will be returned containing the estimate for the desired parameter, the f
 This function finds the value of a parameter other than the first for a function that gives a desired value.
 }
 \examples{
-find_later_value(log, prams = list(32), val = 2, decimals = 6)
+find_later_value(log, params = list(32), val = 2, decimals = 6)
 }

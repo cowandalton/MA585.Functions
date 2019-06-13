@@ -4,13 +4,13 @@
 \alias{find_value}
 \title{Parameter Estimator}
 \usage{
-find_value(f, prams, val = 0, maximum = 1e+05, minimum = 0,
+find_value(f, params, val = 0, maximum = 1e+05, minimum = 0,
   only_integers = F, decimals = 4)
 }
 \arguments{
 \item{f}{the function that is being used (note f should be a monotonic function for this function to work properly).}
 
-\item{prams}{a list of parameter values for all parameters that are specified in a function call prior to the desired parameter (if the desired parameter is the first parameter in the function call, this should not be defined).}
+\item{params}{a list of parameter values for all parameters that are specified in a function call prior to the desired parameter as well as any required parameters that do not have default values that occur after the desired parameter (if the desired parameter is the first parameter in the function call and all other required parameters have default values, this should not be defined).}
 
 \item{val}{the desired value for the function.}
 
@@ -26,11 +26,11 @@ find_value(f, prams, val = 0, maximum = 1e+05, minimum = 0,
 A list will be returned containing the estimate for the desired parameter, the function value when the parameter estimate is used in f, and a warning if the parameter estimate results in a function value that is more than 1 away from val.
 }
 \description{
-This function runs either find_first_value or find_later_value depending on whether a list of prams is specified to find the value of a parameter for a function that gives a desired value.
+This function runs either find_first_value or find_later_value depending on whether a list of parameters is specified to find the value of a parameter for a function that gives a desired value.
 }
 \examples{
 find_value(log, val = 10, maximum = 1000000)
-find_value(log, prams = list(32), val = 2, decimals = 6)
+find_value(log, params = list(32), val = 2, decimals = 6)
 }
 \seealso{
 \code{\link{find_later_value}} and \code{\link{find_first_value}}
